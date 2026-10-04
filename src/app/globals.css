@@ -1,26 +1,192 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: "Segoe UI", var(--font-selawik), system-ui, sans-serif;
+  --font-inter: var(--font-inter-google), "Inter", sans-serif;
+  --font-sora: var(--font-sora-google), "Sora", sans-serif;
+
+  --color-ink: #020202;
+  --color-g1: #a1a1a1;
+  --color-g2: #777777;
+  --color-g3: #6a6a6a;
+  --color-g4: #cacaca;
+  --color-g5: #dcdcdc;
+  --color-g6: #c0c0c0;
+  --color-paper: #d6d6d6;
+  --color-mist: #ebebeb;
+  --color-line: #181818;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #020202;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #020202;
+  color: #a1a1a1;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #a1a1a1;
+  color: #020202;
+}
+
+/*
+ * Figma "vertical trim: cap height to baseline".
+ * Segoe UI metrics (upm 2048): ascender 2210, descender 514, cap height 1434.
+ * Set --lh to the Figma line height when it differs from the font's natural one.
+ */
+.trim {
+  line-height: var(--lh, 1.3301em);
+  text-box: trim-both cap alphabetic;
+}
+
+@supports not (text-box: trim-both cap alphabetic) {
+  .trim::before,
+  .trim::after {
+    content: "";
+    display: table;
+  }
+  .trim::before {
+    margin-bottom: calc((var(--lh, 1.3301em) - 1.3301em) / -2 - 0.3789em);
+  }
+  .trim::after {
+    margin-top: calc((var(--lh, 1.3301em) - 1.3301em) / -2 - 0.251em);
+  }
+}
+
+/* Forced small caps, as used for several Segoe UI headings in the design. */
+.small-caps {
+  font-variant-caps: all-small-caps;
+}
+
+/* Gradient text shared by the oversized headings. */
+.text-sheen {
+  background-image: linear-gradient(
+    var(--sheen-angle, 168deg),
+    #ebebeb 0%,
+    #aeaeae 55%,
+    #a1a1a1 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Outline button: a solid layer slides in from the left on hover. */
+.btn-fill {
+  transform: translateX(-101%);
+  transition: transform 0.45s var(--ease-out-soft);
+}
+.group:hover .btn-fill,
+.group:focus-visible .btn-fill {
+  transform: translateX(0);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- motion ---- */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.hero-rise {
+  animation: hero-rise 1.1s var(--ease-out-soft) both;
+}
+
+@keyframes logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.logo-float {
+  animation: logo-float 7s ease-in-out infinite;
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+.scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-asterisk path {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: spin 9s linear infinite;
+}
+
+@keyframes square-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-14px);
+  }
+}
+.square-drift {
+  animation: square-drift 5s ease-in-out infinite alternate;
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.modal-pop {
+  animation: modal-pop 0.45s var(--ease-out-soft) both;
 }
