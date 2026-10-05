@@ -7,17 +7,27 @@ type Tone = "light" | "dark";
 const toneClasses: Record<Tone, { frame: string; fill: string; text: string }> = {
   // light: white outline on dark backgrounds
   light: {
-    frame: "border-white text-white",
+    frame: "border-white",
     fill: "bg-white",
-    text: "group-hover:text-ink group-focus-visible:text-ink",
+    text: "text-white group-hover:text-ink group-focus-visible:text-ink",
   },
   // dark: black outline on light backgrounds
   dark: {
-    frame: "border-ink text-ink",
+    frame: "btn-ease border-ink",
     fill: "bg-ink",
-    text: "group-hover:text-white group-focus-visible:text-white",
+    text: "text-ink group-hover:text-white group-focus-visible:text-white",
   },
 };
+
+/** Label that slides up while an identical copy rises from below (Atoll CTA hover). */
+export function TextSlide({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`text-slide ${className}`}>
+      <span>{children}</span>
+      <span aria-hidden>{children}</span>
+    </span>
+  );
+}
 
 type OutlineButtonProps = {
   label: string;
@@ -29,6 +39,8 @@ type OutlineButtonProps = {
   onClick?: () => void;
   /** solid background behind the outline (used on the CV preview button) */
   surface?: string;
+  /** Atoll-style label slide and arrow swap on hover (project page CTAs) */
+  slide?: boolean;
 };
 
 /** Outline button with an arrow; a solid layer slides in on hover. */
@@ -41,16 +53,23 @@ export function OutlineButton({
   type = "button",
   onClick,
   surface,
+  slide = false,
 }: OutlineButtonProps) {
   const t = toneClasses[tone];
+  const text = "text-[14px] leading-[13.2px] uppercase whitespace-nowrap";
   const inner = (
     <>
       <span aria-hidden className={`btn-fill absolute inset-0 rounded-[4px] ${t.fill}`} />
-      <span
-        className={`relative flex items-center justify-center gap-3 transition-colors duration-300 ${t.text}`}
-      >
-        <span className="text-[14px] leading-[13.2px] uppercase whitespace-nowrap">{label}</span>
-        <ArrowRight className="shrink-0" />
+      <span className={`btn-label relative flex items-center justify-center gap-3 ${t.text}`}>
+        {slide ? <TextSlide className={text}>{label}</TextSlide> : <span className={text}>{label}</span>}
+        {slide ? (
+          <span className="icon-swap shrink-0">
+            <ArrowRight />
+            <ArrowRight />
+          </span>
+        ) : (
+          <ArrowRight className="btn-arrow shrink-0" />
+        )}
       </span>
     </>
   );
@@ -75,13 +94,14 @@ export function Eyebrow({
   children,
   className = "",
   style,
+  ...rest
 }: {
   children: string;
   className?: string;
   style?: CSSProperties;
-}) {
+} & Record<`data-${string}`, string | undefined>) {
   return (
-    <p className={`whitespace-pre uppercase ${className}`} style={style}>
+    <p className={`whitespace-pre uppercase ${className}`} style={style} {...rest}>
       {children}
     </p>
   );
@@ -102,7 +122,8 @@ export function DiscLink({
   return (
     <Link
       href={href}
-      className={`group absolute z-10 flex size-[120px] items-center justify-center rounded-full bg-white mix-blend-difference transition-transform duration-500 ease-[var(--ease-out-soft)] hover:scale-110 ${className}`}
+      data-reveal="pop"
+      className={`group absolute z-10 flex size-[120px] items-center justify-center rounded-full bg-white mix-blend-difference transition-[scale] duration-500 ease-[var(--ease-out-soft)] hover:scale-110 ${className}`}
       style={style}
     >
       <span className="text-[16px] leading-[28px] text-black capitalize whitespace-nowrap">{label}</span>

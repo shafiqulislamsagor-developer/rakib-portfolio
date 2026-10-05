@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Sora } from "next/font/google";
 import localFont from "next/font/local";
+import { Reveals } from "@/components/motion/Reveals";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
 
 // Segoe UI is the design font. It ships with Windows and is used from the
@@ -32,7 +34,9 @@ const sora = Sora({
 });
 
 
-const scaleScript = `(function(){var d=document.documentElement;function f(){d.style.zoom="1";var w=d.clientWidth;d.style.zoom=String(Math.min(1,w/1440))}f();addEventListener("resize",f)})();`;
+// Runs before first paint: scales the 1440px canvas down on narrower screens and
+// turns animations on unless the visitor prefers reduced motion.
+const bootScript = `(function(){var d=document.documentElement;function f(){d.style.zoom="1";var w=d.clientWidth;d.style.zoom=String(Math.min(1,w/1440))}f();addEventListener("resize",f);try{if(matchMedia("(prefers-reduced-motion: no-preference)").matches)d.classList.add("motion")}catch(e){}})();`;
 
 export const metadata: Metadata = {
   title: {
@@ -55,10 +59,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${selawik.variable} ${inter.variable} ${sora.variable}`}
     >
       <head>
-        {/* The layout is drawn on a 1440px canvas; narrower viewports scale it down proportionally. */}
-        <script dangerouslySetInnerHTML={{ __html: scaleScript }} />
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>
+          {children}
+          <Reveals />
+        </SmoothScroll>
+      </body>
     </html>
   );
 }

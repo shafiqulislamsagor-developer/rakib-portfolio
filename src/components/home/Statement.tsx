@@ -3,9 +3,13 @@ import { DiscLink } from "../ui";
 /** "Create ✱ innovative designs…" statement under the hero. */
 export function Statement() {
   return (
-    <section id="statement" className="relative mx-auto h-[217px] w-full max-w-[1440px]">
+    // sits above the travelling logo so the logo glides behind the words
+    <section id="statement" className="relative z-30 mx-auto h-[217px] w-full max-w-[1440px]">
       {/* three 84px lines vertically centred in the 217px frame */}
-      <p className="absolute top-[-22.5px] left-10 w-[1360px] text-center text-[70px] leading-[84px] text-g1">
+      <p
+        data-reveal="lines"
+        className="absolute top-[-22.5px] left-10 w-[1360px] text-center text-[70px] leading-[84px] text-g1"
+      >
         Create
         {/* six spaces wide gap holding the asterisk pill */}
         <span aria-hidden className="relative inline-block h-[1em] w-[1.6464em] align-baseline">

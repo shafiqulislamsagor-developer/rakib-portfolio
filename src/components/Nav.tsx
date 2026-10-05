@@ -3,9 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { navColumns, navProjects } from "@/data/site";
+import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { CloseLines, MenuLines } from "./icons";
+import { useLenisRef } from "./motion/SmoothScroll";
+import { Svg } from "./Svg";
 import { OutlineButton } from "./ui";
 
 type NavProps = {
@@ -16,33 +19,49 @@ type NavProps = {
 export function Nav({ variant = "inner" }: NavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const lenisRef = useLenisRef();
+  const header = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
+    const lenis = lenisRef?.current;
     const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (lenis) lenis.stop();
+    else document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      if (lenis) lenis.start();
+      else document.body.style.overflow = prev;
     };
-  }, [open]);
+  }, [open, lenisRef]);
+
+  // header fades in after the page intro has started
+  useGSAP(
+    () => {
+      if (!motionEnabled()) return;
+      gsap.fromTo(header.current, { autoAlpha: 0, y: -16 }, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.9 });
+    },
+    { scope: header },
+  );
 
   const isHome = variant === "home";
 
   return (
     <>
       <header
+        ref={header}
+        data-intro
         className={`absolute inset-x-0 top-10 z-40 mx-auto flex w-full max-w-[1440px] items-center justify-between px-10 ${
           isHome ? "h-12" : "h-[62.73px]"
         }`}
       >
         <Link href="/" aria-label="Rakib Khan — home" className="block">
           {isHome ? (
-            <Image src="/brand/logo.svg" alt="" width={41.52} height={48} unoptimized loading="eager" />
+            <Svg src="/brand/logo.svg" width={42} height={48} style={{ width: 41.52, height: 48 }} />
           ) : (
-            <Image src="/brand/logo-r.svg" alt="" width={68} height={62.73} unoptimized loading="eager" />
+            <Svg src="/brand/logo-r.svg" width={68} height={63} style={{ width: 68, height: 62.73 }} />
           )}
         </Link>
         <button
@@ -52,8 +71,12 @@ export function Nav({ variant = "inner" }: NavProps) {
           onClick={() => setOpen(true)}
           className="group relative flex h-12 w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-[4px] bg-ink/40 text-white backdrop-blur-[10px]"
         >
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-[4px] border border-white/0 transition-colors duration-300 ease-figma-out group-hover:border-white"
+          />
           <span aria-hidden className="btn-fill absolute inset-0 rounded-[4px] bg-white" />
-          <MenuLines className="relative transition-colors duration-300 group-hover:text-ink" />
+          <MenuLines className="relative transition-colors duration-300 ease-figma-out group-hover:text-ink" />
         </button>
       </header>
 
@@ -62,6 +85,7 @@ export function Nav({ variant = "inner" }: NavProps) {
         aria-modal="true"
         aria-label="Site menu"
         aria-hidden={!open}
+        data-lenis-prevent
         className={`fixed inset-0 z-50 transition-[visibility] duration-500 ${open ? "visible" : "invisible"}`}
       >
         <button
@@ -81,16 +105,15 @@ export function Nav({ variant = "inner" }: NavProps) {
           >
             <div className="flex items-center justify-between p-5">
               <Link href="/" aria-label="Rakib Khan — home" onClick={() => setOpen(false)}>
-                <Image src="/brand/logo-dark.svg" alt="" width={41.52} height={48} unoptimized />
+                <Svg src="/brand/logo-dark.svg" width={42} height={48} style={{ width: 41.52, height: 48 }} />
               </Link>
               <button
                 type="button"
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
-                className="group relative flex h-12 w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-[4px] bg-ink text-white backdrop-blur-[10px]"
+                className="relative flex h-12 w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-[4px] border border-ink bg-ink text-white backdrop-blur-[10px] transition-colors duration-300 ease-figma-out hover:bg-white hover:text-ink focus-visible:bg-white focus-visible:text-ink"
               >
-                <span aria-hidden className="btn-fill absolute inset-0 rounded-[4px] bg-white" />
-                <CloseLines className="relative transition-colors duration-300 group-hover:text-ink" />
+                <CloseLines className="relative" />
               </button>
             </div>
 
@@ -109,10 +132,10 @@ export function Nav({ variant = "inner" }: NavProps) {
                           <Link
                             href={item.href}
                             onClick={() => setOpen(false)}
-                            className={`inline-flex h-10 items-center pr-4 font-sora text-[20px] leading-[24px] font-semibold transition-colors ${
+                            className={`inline-flex h-10 items-center border-b pr-4 font-sora text-[20px] leading-[24px] font-semibold transition-colors duration-300 ease-figma-out ${
                               active
-                                ? "border-b border-[#010205] text-[#010205]"
-                                : "text-[#808082] hover:text-[#010205]"
+                                ? "border-[#010205] text-[#010205]"
+                                : "border-transparent text-[#808082] hover:border-[#010205] hover:text-[#010205] focus-visible:border-[#010205] focus-visible:text-[#010205]"
                             }`}
                           >
                             {item.label}

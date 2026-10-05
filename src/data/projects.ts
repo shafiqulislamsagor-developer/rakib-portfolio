@@ -1,12 +1,15 @@
+import type { GlyphName } from "./glyphs";
+
 export type Project = {
   slug: string;
   name: string;
-  /** outlined title artwork exported from the design */
-  titleArt: { src: string; width: number; height: number; x: number; y: number };
+  /** outlined title artwork exported from the design, split into letters */
+  titleArt: { glyphs: GlyphName; x: number; y: number };
   facts: { label: string; value: string[] }[];
   website: { label: string; href: string };
   hero: string;
   overview: { lead: string; body: string };
+  /** images or videos (.mp4 / .webm) — the large first slot is meant for either */
   gallery: string[];
   process: { body: string; images: string[] };
   fullPreview: string;
@@ -19,7 +22,7 @@ export const projects: Project[] = [
   {
     slug: "roofnest",
     name: "Roofnest",
-    titleArt: { src: "/type/roofnest.svg", width: 1117, height: 153, x: 64.06, y: 100.57 },
+    titleArt: { glyphs: "roofnest", x: 64.06, y: 100.57 },
     facts: [
       { label: "Industry", value: ["Roofing"] },
       { label: "Services", value: ["Web design", "Web Development", "Front-end / Back-end"] },

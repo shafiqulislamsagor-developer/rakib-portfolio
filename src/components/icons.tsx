@@ -63,7 +63,8 @@ export function MenuLines(props: IconProps) {
   return (
     <svg width="70" height="14" viewBox="0 0 70 14" fill="none" aria-hidden {...props}>
       <line y1="0.75" x2="70" y2="0.75" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="27" y1="12.75" x2="70" y2="12.75" stroke="currentColor" strokeWidth="1.5" />
+      {/* drawn full length and scaled to 27→70; it extends to full length on hover */}
+      <line className="menu-line-2" y1="12.75" x2="70" y2="12.75" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }

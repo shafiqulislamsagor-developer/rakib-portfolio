@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { contact } from "@/data/site";
 import { Eyebrow, OutlineButton } from "../ui";
 
@@ -24,9 +24,23 @@ const defaults = {
   },
 };
 
-const labelCls = "block text-[14px] leading-[21px] text-white/80";
+const labelCls = "block text-[14px] leading-[21px] text-white/80 transition-colors duration-300 group-focus-within/field:text-white";
 const fieldCls =
-  "block w-full border-b border-white/[0.32] bg-transparent py-2 text-[16px] text-white outline-none transition-colors placeholder:text-white/40 focus:border-white/70";
+  "peer block w-full border-b border-white/[0.32] bg-transparent py-2 text-[16px] text-white outline-none transition-colors duration-300 placeholder:text-white/40 hover:border-white/60";
+
+/** Field wrapper: the underline brightens on hover and a white line draws in on focus (AZ form). */
+function Field({ label, gap, children }: { label: string; gap?: boolean; children: ReactNode }) {
+  return (
+    <label className={`group/field relative flex flex-col ${gap ? "gap-px" : ""}`}>
+      <span className={labelCls}>{label}</span>
+      {children}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-700 ease-out-soft peer-focus:scale-x-100"
+      />
+    </label>
+  );
+}
 
 export function Contact({
   intro = defaults.intro,
@@ -56,16 +70,21 @@ export function Contact({
   return (
     <section id="contact" className={`relative mx-auto flex w-full max-w-[1360px] justify-between gap-5 ${className}`}>
       <div className="flex w-[670px] flex-col gap-2">
-        <Eyebrow className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">{"/     Contact"}</Eyebrow>
+        <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
+          {"/     Contact"}
+        </Eyebrow>
         <div className="flex flex-col" style={{ gap: headingGap, paddingRight: headingPadRight }}>
-          <h2 className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1">LET&apos;S WORK TOGETHER</h2>
-          <p className="max-w-[531px] text-[16px] leading-[20px] text-g2">{intro}</p>
+          <h2 data-reveal="lines" className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1">
+            LET&apos;S WORK TOGETHER
+          </h2>
+          <p data-reveal="lines" data-reveal-delay="0.15" className="max-w-[531px] text-[16px] leading-[20px] text-g2">
+            {intro}
+          </p>
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="flex w-[670px] flex-col gap-[51px]">
-        <label className="flex flex-col gap-px">
-          <span className={labelCls}>Name</span>
+      <form data-reveal="stagger" onSubmit={onSubmit} className="flex w-[670px] flex-col gap-[51px]">
+        <Field label="Name" gap>
           <input
             name="name"
             required
@@ -73,9 +92,8 @@ export function Contact({
             placeholder={placeholders.name}
             className={`${fieldCls} h-[35px] font-inter leading-[19.36px]`}
           />
-        </label>
-        <label className="flex flex-col">
-          <span className={labelCls}>Email</span>
+        </Field>
+        <Field label="Email">
           <input
             name="email"
             type="email"
@@ -84,24 +102,22 @@ export function Contact({
             placeholder={placeholders.email}
             className={`${fieldCls} h-[37px] leading-[21.28px]`}
           />
-        </label>
-        <label className="flex flex-col">
-          <span className={labelCls}>I work at (optional)</span>
+        </Field>
+        <Field label="I work at (optional)">
           <input
             name="company"
             autoComplete="organization"
             placeholder={placeholders.company}
             className={`${fieldCls} h-[37px] leading-[21.28px]`}
           />
-        </label>
-        <label className="flex flex-col">
-          <span className={labelCls}>Details about the project</span>
+        </Field>
+        <Field label="Details about the project">
           <textarea
             name="details"
             placeholder={placeholders.details}
             className={`${fieldCls} h-[120px] resize-none leading-[22.86px]`}
           />
-        </label>
+        </Field>
         <div className="flex items-center gap-6">
           <OutlineButton label="Send" type="submit" className="w-[226px]" />
           {sent && <span className="text-[14px] text-g2">Your mail app should open now — thanks!</span>}

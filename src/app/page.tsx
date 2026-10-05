@@ -1,5 +1,6 @@
 import { AboutIntro } from "@/components/home/AboutIntro";
 import { Hero } from "@/components/home/Hero";
+import { HomeLogo } from "@/components/home/HomeLogo";
 import { Process } from "@/components/home/Process";
 import { Services } from "@/components/home/Services";
 import { Statement } from "@/components/home/Statement";
@@ -15,12 +16,16 @@ export default function HomePage() {
     <div className="relative overflow-x-clip">
       <Nav variant="home" />
       <main>
-        <Hero />
-        <div className="mt-32">
-          <Statement />
-        </div>
-        <div className="mt-[187px]">
-          <Services />
+        {/* the glass logo travels from the hero into the services section */}
+        <div className="relative">
+          <Hero />
+          <div className="mt-32">
+            <Statement />
+          </div>
+          <div className="mt-[187px]">
+            <Services />
+          </div>
+          <HomeLogo />
         </div>
         <div className="mt-32">
           <Work />

@@ -130,7 +130,7 @@ export function UploadStudio() {
       >
         <div className="flex w-[1015px] flex-col gap-[50px]">
           <div className="flex flex-col gap-10">
-            <label className="relative block h-10">
+            <label data-intro data-reveal="fade" className="relative block h-10">
               <span className="sr-only">Project name</span>
               <input
                 value={title}
@@ -139,7 +139,9 @@ export function UploadStudio() {
                 className="absolute top-[-21.2px] left-0 block h-[75px] w-full bg-transparent p-0 text-[56px] leading-[74.5px] font-semibold text-g2 outline-none placeholder:text-g2"
               />
             </label>
-            <DropZone />
+            <div data-intro data-reveal="up" data-reveal-delay="0.1">
+              <DropZone />
+            </div>
           </div>
           {blocks.slice(1).map((b, i) => (
             <div key={b} className="flex flex-col gap-[50px]">
@@ -161,7 +163,7 @@ export function UploadStudio() {
           ))}
         </div>
 
-        <aside className="w-[325px] pt-20">
+        <aside data-intro data-reveal="up" data-reveal-delay="0.2" className="w-[325px] pt-20">
           <div className="flex flex-col gap-10 rounded-[4px] pb-[30px] outline outline-1 outline-[#989898]/25">
             <div>
               <h2 className="flex h-12 items-center rounded-t-[4px] bg-[#090909] px-3 text-[18px] leading-[1.33] font-semibold text-g2 capitalize">
@@ -190,14 +192,14 @@ export function UploadStudio() {
                 </div>
               </div>
               <div className="flex w-[270px] flex-col gap-4">
-                <OutlineButton label="Cancel" href="/" className="w-full" />
+                <OutlineButton label="Cancel" href="/" className="btn-ease w-full" />
                 <button
                   type="button"
                   onClick={() => setStep("final")}
-                  className="group relative inline-flex h-10 w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-[4px] border border-white bg-white text-ink"
+                  className="btn-ease group relative inline-flex h-10 w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-[4px] border border-white bg-white text-ink"
                 >
                   <span aria-hidden className="btn-fill absolute inset-0 bg-ink" />
-                  <span className="relative flex items-center gap-3 transition-colors group-hover:text-white">
+                  <span className="btn-label relative flex items-center gap-3 group-hover:text-white">
                     <span className="text-[14px] leading-[13.2px] uppercase">Continue</span>
                     <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden>
                       <path d="M6.03814 2.70084C6.47814 3.25884 6.84014 3.71084 7.22414 4.17384H0.994141V5.26984H7.21414C6.82914 5.72184 6.46614 6.17484 6.03814 6.72184L4.66414 8.45784H6.03814L8.99414 4.70984L6.03814 0.964844H4.66414L6.03814 2.70084Z" fill="currentColor" />
@@ -262,8 +264,8 @@ export function UploadStudio() {
                         {col.map((c) => (
                           <label key={c} className="flex h-[14px] cursor-pointer items-center gap-1">
                             <input type="checkbox" className="peer sr-only" />
-                            <span className="relative size-[14px] shrink-0 rounded-[2px] border border-[#dfdfdf] peer-checked:border-ink peer-checked:bg-ink peer-focus-visible:ring-1 peer-focus-visible:ring-ink peer-checked:[&>svg]:block">
-                              <svg viewBox="0 0 14 14" className="absolute inset-0 hidden text-white" aria-hidden>
+                            <span className="relative size-[14px] shrink-0 rounded-[2px] border border-[#dfdfdf] transition-colors duration-300 ease-figma-out peer-checked:border-ink peer-checked:bg-ink peer-focus-visible:ring-1 peer-focus-visible:ring-ink peer-checked:[&>svg]:scale-100 peer-checked:[&>svg]:opacity-100">
+                              <svg viewBox="0 0 14 14" className="absolute inset-0 scale-50 text-white opacity-0 transition-[opacity,scale] duration-300 ease-figma-out" aria-hidden>
                                 <path d="M3.5 7.2 5.8 9.4 10.5 4.6" fill="none" stroke="currentColor" strokeWidth="1.3" />
                               </svg>
                             </span>

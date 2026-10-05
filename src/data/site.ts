@@ -44,7 +44,29 @@ export const works = [
   { title: "Pay.co Financial", image: "/images/work/animator.webp", tags: ["UI Design", "UX Design"], href: "/projects/roofnest" },
 ];
 
-export const services = ["UX Research", "Web/Mobile App UI", "SaaS Design", "Brand Design"];
+// desc/image are shown when a row expands on hover (row variant in the design)
+export const services = [
+  {
+    title: "UX Research",
+    desc: "Enhancing user experiences through in-depth research, usability testing, and data-driven insights.",
+    image: "/images/services/ux.webp",
+  },
+  {
+    title: "Web/Mobile App UI",
+    desc: "Creating visually stunning and intuitive interfaces for web and mobile applications.",
+    image: "/images/services/web.webp",
+  },
+  {
+    title: "SaaS Design",
+    desc: "Designing scalable and conversion-focused SaaS platforms with seamless user flows.",
+    image: "/images/services/saas.webp",
+  },
+  {
+    title: "Brand Design",
+    desc: "Building unique brand identities with impactful visuals, typography, and design systems.",
+    image: "/images/services/brand.webp",
+  },
+];
 
 export type Reason = {
   title: string;
@@ -74,16 +96,38 @@ export const processSteps = [
   { index: "01", title: "Deliver", body: "I prepare all final assets, design systems, and prototypes for handoff, ensuring a smooth transition to development. I stay involved to make sure the final product matches the design vision." },
 ];
 
+// `quote` is revealed on hover (card variant in the design); its author line can differ.
+const quotes = [
+  {
+    quote:
+      "“He took our vision and transformed it into a clean, user-friendly design that our users love. Communication was smooth, and delivery was on point.”",
+    quoteName: "Jason",
+    quoteRole: "Product Manager at TechFlow",
+  },
+  {
+    quote:
+      "“Working with Rakib was a game-changer. His design sense is sharp, and he understood our brand from day one”",
+    quoteName: "Sarah",
+    quoteRole: "SaaS Startup Founder",
+  },
+  {
+    quote:
+      "“Rakib nailed the UI for our mobile app, and the results have been amazing. We’ve seen a noticeable boost in user engagement since launch.”",
+    quoteName: "Amira",
+    quoteRole: "CEO of Glamii Beauty App",
+  },
+];
+
 export const testimonials = {
   home: [
-    { name: "Sumit Saha", role: "CEO and Co-founder at ABC Comapny", image: "/images/testimonials/home-1.webp" },
-    { name: "Sarah", role: "SaaS Startup Founder", image: "/images/testimonials/client-2.webp" },
-    { name: "Amira", role: "CEO of Glamii Beauty App", image: "/images/testimonials/home-3.webp" },
+    { name: "Sumit Saha", role: "CEO and Co-founder at ABC Comapny", image: "/images/testimonials/home-1.webp", ...quotes[0] },
+    { name: "Sarah", role: "SaaS Startup Founder", image: "/images/testimonials/client-2.webp", ...quotes[1] },
+    { name: "Amira", role: "CEO of Glamii Beauty App", image: "/images/testimonials/home-3.webp", ...quotes[2] },
   ],
   about: [
-    { name: "Sumit Saha", role: "CEO and Co-founder at ABC Comapny", image: "/images/testimonials/about-1.webp" },
-    { name: "Sarah", role: "SaaS Startup Founder", image: "/images/testimonials/client-2.webp" },
-    { name: "Amira", role: "CEO of Glamii Beauty App", image: "/images/testimonials/about-3.webp" },
+    { name: "Sumit Saha", role: "CEO and Co-founder at ABC Comapny", image: "/images/testimonials/about-1.webp", ...quotes[0] },
+    { name: "Sarah", role: "SaaS Startup Founder", image: "/images/testimonials/client-2.webp", ...quotes[1] },
+    { name: "Amira", role: "CEO of Glamii Beauty App", image: "/images/testimonials/about-3.webp", ...quotes[2] },
   ],
 };
 
