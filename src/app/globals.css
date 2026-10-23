@@ -268,10 +268,11 @@ html.motion [data-intro] {
 html.motion [data-motion-hide] {
   visibility: hidden;
 }
-/* sections that pin their heading while the content scrolls past */
+/* sections that pin their heading while the content scrolls past
+   (--sticky-top sets the gap kept above the pinned block) */
 html.motion [data-sticky] {
   position: sticky;
-  top: 0;
+  top: var(--sticky-top, 0px);
 }
 
 @keyframes scroll-dot {

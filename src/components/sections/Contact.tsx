@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type CSSProperties, type FormEvent, type ReactNode } from "react";
 import { contact } from "@/data/site";
 import { Eyebrow, OutlineButton } from "../ui";
 
@@ -69,7 +69,12 @@ export function Contact({
 
   return (
     <section id="contact" className={`relative mx-auto flex w-full max-w-[1360px] justify-between gap-5 ${className}`}>
-      <div className="flex w-[670px] flex-col gap-2">
+      {/* pinned while the form scrolls past it (see [data-sticky] in globals.css) */}
+      <div
+        data-sticky
+        className="flex h-fit w-[670px] flex-col gap-2 self-start"
+        style={{ "--sticky-top": "128px" } as CSSProperties}
+      >
         <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
           {"/     Contact"}
         </Eyebrow>

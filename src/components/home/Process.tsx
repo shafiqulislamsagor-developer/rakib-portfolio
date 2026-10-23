@@ -4,7 +4,8 @@ import { Eyebrow } from "../ui";
 export function Process() {
   return (
     <section aria-labelledby="process-title" className="relative mx-auto flex h-[2300px] w-full max-w-[1440px] justify-between px-10">
-      <div className="w-[460px] py-32">
+      {/* pinned while the steps scroll past it (see [data-sticky] in globals.css) */}
+      <div data-sticky className="h-fit w-[460px] self-start py-32">
         <div className="flex flex-col gap-2">
           <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">{"/     Process"}</Eyebrow>
           <div className="flex flex-col gap-6 pr-[67px]">
