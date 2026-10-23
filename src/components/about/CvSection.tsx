@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { figmaLinearGradient } from "@/lib/figma";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { Svg } from "../Svg";
-import { DownloadCv, OutlineButton } from "../ui";
+import { DownloadCv, OutlineButton } from "../kit";
 
 const background = figmaLinearGradient(
   [
@@ -22,7 +22,15 @@ const background = figmaLinearGradient(
   810,
 );
 
-export function CvSection() {
+type CvSectionProps = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  /** Where "Preview" and "Download CV" point; the /cv route serves the current file. */
+  cvUrl?: string;
+};
+
+export function CvSection({ eyebrow, heading, intro, cvUrl = "/cv" }: CvSectionProps) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -79,7 +87,7 @@ export function CvSection() {
           <div data-cv-preview className="absolute top-[280px] left-[261px] flex">
             <OutlineButton
               label="Preview"
-              href="/cv/rakib-khan-cv.pdf"
+              href={cvUrl}
               surface="rgba(0,0,0,0.5)"
               className="w-[226px] border-white/25!"
             />
@@ -93,19 +101,18 @@ export function CvSection() {
                 data-reveal="fade"
                 className="text-[11.16px] leading-[14px] tracking-[1.26px] whitespace-pre text-ink uppercase"
               >
-                {"/     my cv"}
+                {`/     ${eyebrow}`}
               </p>
               <h2 id="cv-title" data-reveal="lines" className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-ink">
-                Download My CV
+                {heading}
               </h2>
             </div>
             <p data-reveal="lines" data-reveal-delay="0.15" className="text-[16px] leading-[20px] text-[#383838]">
-              Get a closer look at my skills, experience, and design journey. Download or preview my CV to explore how I
-              can add value to your next project!
+              {intro}
             </p>
           </div>
           <div data-reveal="up" data-reveal-delay="0.25" className="flex">
-            <DownloadCv tone="dark" />
+            <DownloadCv tone="dark" href={cvUrl} />
           </div>
         </div>
       </div>

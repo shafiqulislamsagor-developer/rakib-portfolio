@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { reasons } from "@/data/site";
+import { ContentIcon } from "@/components/content-icon";
+import type { Reason } from "@/lib/design";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { SvgType } from "../motion/SvgType";
 
@@ -11,7 +12,7 @@ import { SvgType } from "../motion/SvgType";
  * Scroll effect after uiuxsam.com: the heading stays pinned while the cards
  * scroll over it, each one flipping round to face the visitor as it rises.
  */
-export function WhyConsider({ lineOpacity = 0.1 }: { lineOpacity?: number }) {
+export function WhyConsider({ items, lineOpacity = 0.1 }: { items: Reason[]; lineOpacity?: number }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -66,8 +67,12 @@ export function WhyConsider({ lineOpacity = 0.1 }: { lineOpacity?: number }) {
         />
       </div>
 
-      <div className="relative mx-auto -mt-[102px] h-[1928px] w-[1360px]">
-        {reasons.map((r) => (
+      {/* The cards sit at measured points; the canvas ends 320px below the last one. */}
+      <div
+        className="relative mx-auto -mt-[102px] w-[1360px]"
+        style={{ height: Math.max(...items.map((r) => r.y), 0) + 320 }}
+      >
+        {items.map((r) => (
           <article
             key={r.title}
             data-flip
@@ -78,7 +83,11 @@ export function WhyConsider({ lineOpacity = 0.1 }: { lineOpacity?: number }) {
               {r.title.replace(/^\n/, "")}
             </h3>
             <div className="flex flex-col gap-[30px]">
-              <Image src={r.icon} alt="" width={48} height={48} unoptimized />
+              {r.artwork ? (
+                <Image src={r.artwork} alt="" width={48} height={48} unoptimized />
+              ) : (
+                <ContentIcon name={r.icon} className="size-12 text-white" />
+              )}
               <p className="trim text-[16px] tracking-[0.1px] text-g6 capitalize [--lh:24px]">{r.body}</p>
             </div>
           </article>

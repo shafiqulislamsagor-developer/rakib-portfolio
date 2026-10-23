@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# verification builds (NEXT_DIST_DIR), the local database and seed backups
+/.next-*/
+/.mongo-data/
+/.content-backups/

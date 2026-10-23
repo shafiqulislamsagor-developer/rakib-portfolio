@@ -1,31 +1,44 @@
-import { processSteps } from "@/data/site";
-import { Eyebrow } from "../ui";
+import type { ProcessStep } from "@/lib/design";
+import { Eyebrow } from "../kit";
 
-export function Process() {
+type ProcessProps = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  steps: ProcessStep[];
+};
+
+export function Process({ eyebrow, heading, intro, steps }: ProcessProps) {
   return (
-    <section aria-labelledby="process-title" className="relative mx-auto flex h-[2300px] w-full max-w-[1440px] justify-between px-10">
+    <section
+      aria-labelledby="process-title"
+      className="relative mx-auto flex w-full max-w-[1440px] justify-between px-10"
+      // The canvas grows with the number of steps: 408px per card, from 260px down.
+      style={{ height: 260 + steps.length * 408 }}
+    >
       {/* pinned while the steps scroll past it (see [data-sticky] in globals.css) */}
       <div data-sticky className="h-fit w-[460px] self-start py-32">
         <div className="flex flex-col gap-2">
-          <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">{"/     Process"}</Eyebrow>
+          <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
+            {`/     ${eyebrow}`}
+          </Eyebrow>
           <div className="flex flex-col gap-6 pr-[67px]">
             <h2
               id="process-title"
               data-reveal="lines"
               className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1"
             >
-              Work Process
+              {heading}
             </h2>
             <p data-reveal="lines" data-reveal-delay="0.15" className="text-[16px] leading-[20px] text-g2">
-              I follow a clear, user-focused process—from research to delivery—that ensures every design is purposeful,
-              effective, and aligned with project goals.
+              {intro}
             </p>
           </div>
         </div>
       </div>
 
-      <ol className="relative mt-[260px] h-[2040px] w-[900px]">
-        {processSteps.map((s, i) => (
+      <ol className="relative mt-[260px] w-[900px]" style={{ height: steps.length * 408 }}>
+        {steps.map((s, i) => (
           <li
             key={s.title}
             data-reveal="up"

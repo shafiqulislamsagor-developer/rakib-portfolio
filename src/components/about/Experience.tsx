@@ -1,9 +1,18 @@
-import { experiences } from "@/data/site";
-import { DownloadCv, Eyebrow } from "../ui";
+import { DownloadCv, Eyebrow } from "../kit";
 
-function Table({ columns }: { columns: [number, number] }) {
+/** One line of either table: what it was, where, and over which years. */
+export type TimelineRow = { role: string; company: string; from: string; to: string };
+
+function Table({
+  columns,
+  rows,
+  head,
+}: {
+  columns: [number, number];
+  rows: TimelineRow[];
+  head: [string, string, string];
+}) {
   const [c1, c2] = columns;
-  const head = ["Role", "COMPANY", "yEAR"];
   return (
     <div className="w-full">
       <div className="flex h-[25px]">
@@ -16,8 +25,8 @@ function Table({ columns }: { columns: [number, number] }) {
           </div>
         ))}
       </div>
-      {experiences.map((e, row) => (
-        <div key={e.role} className="group relative h-[90.39px]">
+      {rows.map((e, row) => (
+        <div key={`${e.role}-${e.company}-${row}`} className="group relative h-[90.39px]">
           <div data-reveal="up" data-reveal-delay={String(row * 0.06)} className="absolute inset-0">
             <p className="absolute top-[31.5px] left-0 text-[24px] leading-[26.4px] text-g2 transition-colors duration-300 group-hover:text-g5">
               {e.role}
@@ -47,24 +56,29 @@ function Table({ columns }: { columns: [number, number] }) {
   );
 }
 
-const intro =
-  "I’ve worked on a range of web, mobile, and SaaS projects—bringing ideas to life with clean, user-focused design and real-world experience.";
+type SectionProps = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  rows: TimelineRow[];
+  cvUrl?: string;
+};
 
-export function Experience() {
+export function Experience({ eyebrow, heading, intro, rows, cvUrl }: SectionProps) {
   return (
     <section aria-labelledby="experience-title" className="relative mx-auto flex w-[1360px] justify-between">
       <div className="flex w-[460px] flex-col gap-[30px] pr-[114px]">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
-              {"/     Experience"}
+              {`/     ${eyebrow}`}
             </Eyebrow>
             <h2
               id="experience-title"
               data-reveal="lines"
               className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1"
             >
-              Experiences
+              {heading}
             </h2>
           </div>
           <p data-reveal="lines" data-reveal-delay="0.15" className="text-[16px] leading-[20px] text-g2">
@@ -72,31 +86,31 @@ export function Experience() {
           </p>
         </div>
         <div data-reveal="up" data-reveal-delay="0.25" className="flex">
-          <DownloadCv />
+          <DownloadCv href={cvUrl} />
         </div>
       </div>
       <div className="w-[900px] pt-[325px]">
-        <Table columns={[347.08, 347.08]} />
+        <Table columns={[347.08, 347.08]} rows={rows} head={["Role", "COMPANY", "yEAR"]} />
       </div>
     </section>
   );
 }
 
-export function Education() {
+export function Education({ eyebrow, heading, intro, rows, cvUrl }: SectionProps) {
   return (
     <section aria-labelledby="education-title" className="relative mx-auto flex w-[1360px] flex-col items-center gap-20">
       <div className="flex flex-col items-center gap-[30px]">
         <div className="flex flex-col items-center gap-4 text-center">
           <div className="flex flex-col gap-2">
             <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
-              {"/     education"}
+              {`/     ${eyebrow}`}
             </Eyebrow>
             <h2
               id="education-title"
               data-reveal="lines"
               className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1"
             >
-              Education &amp; Qualification
+              {heading}
             </h2>
           </div>
           <p data-reveal="lines" data-reveal-delay="0.15" className="text-[16px] leading-[20px] text-g2">
@@ -104,10 +118,10 @@ export function Education() {
           </p>
         </div>
         <div data-reveal="up" data-reveal-delay="0.25" className="flex">
-          <DownloadCv />
+          <DownloadCv href={cvUrl} />
         </div>
       </div>
-      <Table columns={[347.08, 347.08]} />
+      <Table columns={[347.08, 347.08]} rows={rows} head={["Qualification", "INSTITUTION", "yEAR"]} />
     </section>
   );
 }

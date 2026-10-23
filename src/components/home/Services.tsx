@@ -1,12 +1,19 @@
 import Image from "next/image";
-import { services } from "@/data/site";
-import { DiscLink, Eyebrow } from "../ui";
+import type { ServiceRow } from "@/lib/design";
+import { DiscLink, Eyebrow } from "../kit";
 
-export function Services() {
+type ServicesProps = {
+  eyebrow: string;
+  intro: string;
+  /** Four rows in the design; each one expands on hover to show its shot. */
+  rows: ServiceRow[];
+};
+
+export function Services({ eyebrow, intro, rows }: ServicesProps) {
   return (
     <section id="services" aria-label="What I do" className="relative mx-auto h-[875px] w-full max-w-[1440px]">
       <Eyebrow data-reveal="fade" className="trim absolute top-0 left-[44.13px] text-[16px] tracking-[0.8px] text-g3">
-        {"/      What i Do"}
+        {`/      ${eyebrow}`}
       </Eyebrow>
       {/* static logo slot; with motion on, the hero logo flies in and takes its place */}
       <div
@@ -25,13 +32,11 @@ export function Services() {
         data-reveal="lines"
         className="absolute top-0 left-[817.13px] w-[579px] text-[18px] leading-[28px] tracking-[0.1px] text-g2"
       >
-        I craft seamless digital experiences by blending creativity with strategy. From UX research to web &amp; mobile
-        UI, I design intuitive interfaces that enhance usability. Whether it’s a SaaS platform or brand identity, my goal
-        is to make every interaction engaging and impactful.
+        {intro}
       </p>
 
       <ul className="absolute top-[227px] left-[608.13px] flex w-[788px] flex-col gap-10">
-        {services.map((s, i) => (
+        {rows.map((s, i) => (
           <li
             key={s.title}
             className="group relative h-[132px] transition-[height] duration-300 ease-figma-out hover:h-[220px]"
@@ -51,9 +56,11 @@ export function Services() {
             <p className="pointer-events-none absolute top-[113.6px] left-4 w-[436px] text-[16px] leading-[24px] text-[#989898] opacity-0 transition-opacity duration-300 ease-figma-out group-hover:opacity-100">
               {s.desc}
             </p>
-            <div className="pointer-events-none absolute top-10 right-4 h-[140px] w-[280px] overflow-hidden rounded-[4px] opacity-0 transition-opacity duration-300 ease-figma-out group-hover:opacity-100">
-              <Image src={s.image} alt="" fill sizes="280px" className="object-cover" />
-            </div>
+            {s.image && (
+              <div className="pointer-events-none absolute top-10 right-4 h-[140px] w-[280px] overflow-hidden rounded-[4px] opacity-0 transition-opacity duration-300 ease-figma-out group-hover:opacity-100">
+                <Image src={s.image} alt={s.alt} fill sizes="280px" className="object-cover" />
+              </div>
+            )}
           </li>
         ))}
       </ul>

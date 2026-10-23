@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useRef, type CSSProperties } from "react";
-import { contact, menuLinks, socialLinks } from "@/data/site";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { ArrowUpRightSmall } from "../icons";
 import { useLenisRef } from "../motion/SmoothScroll";
 import { SvgType } from "../motion/SvgType";
-import { DiscLink } from "../ui";
+import { DiscLink } from "../kit";
 
 type FooterProps = {
   variant?: "home" | "inner";
@@ -15,6 +14,14 @@ type FooterProps = {
   contentX?: number;
   discX?: number;
   letsTalkX?: number;
+  email: string;
+  phone: string;
+  menuLinks: { label: string; href: string }[];
+  socialLinks: { label: string; href: string }[];
+  /** Privacy policy and the other pages marked for the footer in the admin. */
+  legalLinks?: { label: string; href: string }[];
+  /** Shown in the copyright line; the design reads "Designed by Rakib Khan®". */
+  siteName: string;
 };
 
 const letsTalk = {
@@ -37,7 +44,18 @@ function Column({ title, children }: { title: string; children: React.ReactNode 
 
 const linkCls = "text-[18px] leading-[17px] text-g2 transition-colors hover:text-white";
 
-export function Footer({ variant = "home", contentX, discX, letsTalkX }: FooterProps) {
+export function Footer({
+  variant = "home",
+  contentX,
+  discX,
+  letsTalkX,
+  email,
+  phone,
+  menuLinks,
+  socialLinks,
+  legalLinks = [],
+  siteName,
+}: FooterProps) {
   const root = useRef<HTMLElement>(null);
   const logoBtn = useRef<HTMLButtonElement>(null);
   const lenisRef = useLenisRef();
@@ -112,15 +130,17 @@ export function Footer({ variant = "home", contentX, discX, letsTalkX }: FooterP
               </p>
               <ul data-reveal="stagger" className="flex flex-col gap-3 py-[6px] text-[18px] leading-[17px]">
                 <li>
-                  <a href={`mailto:${contact.email}`} className={linkCls}>
-                    {contact.email}
+                  <a href={`mailto:${email}`} className={linkCls}>
+                    {email}
                   </a>
                 </li>
-                <li>
-                  <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className={linkCls}>
-                    {contact.phone}
-                  </a>
-                </li>
+                {phone && (
+                  <li>
+                    <a href={`tel:${phone.replace(/[^+\d]/g, "")}`} className={linkCls}>
+                      {phone}
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
             <div className="flex gap-5">
@@ -167,12 +187,23 @@ export function Footer({ variant = "home", contentX, discX, letsTalkX }: FooterP
           style={{ left: x, top: privacyY }}
         >
           <div className="flex items-center gap-8">
-            <span className="text-[18px] leading-[16.5px] text-g2">©2025</span>
-            <span className={`text-[18px] text-g2 ${isHome ? "leading-[1.33]" : "leading-[16.5px]"}`}>
-              Privacy | Policy
+            <span className="text-[18px] leading-[16.5px] text-g2">©{new Date().getFullYear()}</span>
+            <span className={`flex items-center gap-2 text-[18px] text-g2 ${isHome ? "leading-[1.33]" : "leading-[16.5px]"}`}>
+              {legalLinks.length ? (
+                legalLinks.map((link, i) => (
+                  <span key={link.href} className="flex items-center gap-2">
+                    {i > 0 && <span aria-hidden>|</span>}
+                    <Link href={link.href} className="transition-colors hover:text-white">
+                      {link.label}
+                    </Link>
+                  </span>
+                ))
+              ) : (
+                <>Privacy | Policy</>
+              )}
             </span>
           </div>
-          <span className="text-[18px] leading-[16.5px] text-g2">Designed by Rakib Khan®</span>
+          <span className="text-[18px] leading-[16.5px] text-g2">Designed by {siteName}®</span>
         </div>
 
         <h2 className="sr-only">Let’s talk</h2>

@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Verification builds (NEXT_DIST_DIR), the local database and content
+    // backups are generated, not authored.
+    ".next-*/**",
+    ".mongo-data/**",
+    ".content-backups/**",
+    "lint.json",
   ]),
 ]);
 

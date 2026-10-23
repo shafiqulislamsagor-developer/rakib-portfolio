@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type ChangeEvent, type DragEvent } from "react";
-import { OutlineButton } from "../ui";
+import { OutlineButton } from "../kit";
 
 type Step = "edit" | "final" | "published" | "promote";
 

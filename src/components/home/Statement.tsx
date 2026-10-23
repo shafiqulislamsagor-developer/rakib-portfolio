@@ -1,7 +1,16 @@
-import { DiscLink } from "../ui";
+import { DiscLink } from "../kit";
+
+type StatementProps = {
+  /** The light-grey opening, with the spinning asterisk dropped in after its first word. */
+  headline: string;
+  /** The darker continuation of the same sentence. */
+  highlight: string;
+};
 
 /** "Create ✱ innovative designs…" statement under the hero. */
-export function Statement() {
+export function Statement({ headline, highlight }: StatementProps) {
+  // Figma sets the asterisk pill in the gap after the first word.
+  const [first, ...rest] = headline.split(" ");
   return (
     // sits above the travelling logo so the logo glides behind the words
     <section id="statement" className="relative z-30 mx-auto h-[217px] w-full max-w-[1440px]">
@@ -10,7 +19,7 @@ export function Statement() {
         data-reveal="lines"
         className="absolute top-[-22.5px] left-10 w-[1360px] text-center text-[70px] leading-[84px] text-g1"
       >
-        Create
+        {first}
         {/* six spaces wide gap holding the asterisk pill */}
         <span aria-hidden className="relative inline-block h-[1em] w-[1.6464em] align-baseline">
           <svg
@@ -29,8 +38,7 @@ export function Statement() {
             />
           </svg>
         </span>
-        innovative designs for modern websites, mobile apps,{" "}
-        <span className="text-[#515151]">and web platforms across a wide range of industries.</span>
+        {rest.join(" ")} <span className="text-[#515151]">{highlight}</span>
       </p>
       <DiscLink label="Hire Me" href="#contact" style={{ left: 189.04, top: 157 }} />
     </section>

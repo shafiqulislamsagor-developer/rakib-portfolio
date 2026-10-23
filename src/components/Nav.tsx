@@ -4,19 +4,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { navColumns, navProjects } from "@/data/site";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { CloseLines, MenuLines } from "./icons";
 import { useLenisRef } from "./motion/SmoothScroll";
 import { Svg } from "./Svg";
-import { OutlineButton } from "./ui";
+import { OutlineButton } from "./kit";
 
 type NavProps = {
   /** "home" uses the compact mark, inner pages use the mark with the ® sign */
   variant?: "home" | "inner";
+  /** menu links, already split into the two columns of the design */
+  columns: { label: string; href: string }[][];
+  /** the three project cards along the bottom of the open panel */
+  projects: { index: string; title: string; image: string; href: string; w: number }[];
 };
 
-export function Nav({ variant = "inner" }: NavProps) {
+export function Nav({ variant = "inner", columns, projects }: NavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const lenisRef = useLenisRef();
@@ -119,7 +122,7 @@ export function Nav({ variant = "inner" }: NavProps) {
 
             <div className="mt-4 flex items-end justify-between pr-5">
               <nav aria-label="Primary" className="flex gap-[49px] px-5">
-                {navColumns.map((col, ci) => (
+                {columns.map((col, ci) => (
                   <ul key={ci} className="flex flex-col">
                     {col.map((item, i) => {
                       const active = item.href === pathname;
@@ -155,7 +158,7 @@ export function Nav({ variant = "inner" }: NavProps) {
             </div>
 
             <div className="mt-6 flex gap-5 p-5">
-              {navProjects.map((p, i) => (
+              {projects.map((p, i) => (
                 <Link
                   key={p.index}
                   href={p.href}

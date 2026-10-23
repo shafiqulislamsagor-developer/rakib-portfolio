@@ -2,11 +2,18 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { tools } from "@/data/site";
+import type { Tool } from "@/lib/design";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
-import { Eyebrow } from "../ui";
+import { Eyebrow } from "../kit";
 
-export function Advantages() {
+type AdvantagesProps = {
+  eyebrow: string;
+  heading: string;
+  intro: string;
+  tools: Tool[];
+};
+
+export function Advantages({ eyebrow, heading, intro, tools }: AdvantagesProps) {
   const root = useRef<HTMLElement>(null);
 
   // comment: "these icons will fall to the floor like footballs" — the lowest ball
@@ -37,19 +44,18 @@ export function Advantages() {
       <div className="flex items-end gap-4 pr-[58px]">
         <div className="flex w-[643px] flex-col gap-2">
           <Eyebrow data-reveal="fade" className="text-[16px] leading-[14px] tracking-[1.26px] text-g1">
-            {"/     Expertise"}
+            {`/     ${eyebrow}`}
           </Eyebrow>
           <h2
             id="advantages-title"
             data-reveal="lines"
             className="h-[62px] text-[56px] leading-[61.6px] tracking-[-1.68px] text-g1"
           >
-            My Advantages
+            {heading}
           </h2>
         </div>
         <p data-reveal="lines" data-reveal-delay="0.15" className="w-[643px] text-[16px] leading-[20px] text-g2">
-          From wireframing to high-fidelity prototyping, I use industry-leading tools like Figma, Framer, Adobe Suite, and
-          more to bring ideas to life—ensuring smooth workflows, pixel-perfect designs, and efficient collaboration.
+          {intro}
         </p>
       </div>
 

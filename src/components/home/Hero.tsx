@@ -4,7 +4,12 @@ import { useRef } from "react";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { SvgType } from "../motion/SvgType";
 
-export function Hero() {
+/**
+ * The name and role are drawn as outlined type exported from the design, so
+ * they stay artwork; `name` and `title` carry the same words to screen
+ * readers and to the page's one <h1>.
+ */
+export function Hero({ name, title }: { name: string; title: string }) {
   const root = useRef<HTMLElement>(null);
 
   // page load: the name rises letter by letter out of its own box
@@ -26,7 +31,7 @@ export function Hero() {
   return (
     <section ref={root} aria-labelledby="hero-title" className="relative mx-auto h-[924px] w-full max-w-[1440px]">
       <h1 id="hero-title" className="sr-only">
-        Rakib Khan — UI/UX Designer
+        {name} — {title}
       </h1>
 
       <p
@@ -34,7 +39,7 @@ export function Hero() {
         data-hero-label
         className="absolute top-[418px] left-10 text-[14px] leading-[1.33] whitespace-pre text-g1 uppercase"
       >
-        {"/               2025"}
+        {`/               ${new Date().getFullYear()}`}
       </p>
       <p data-intro data-hero-label className="absolute top-[418px] right-10 text-[14px] leading-[1.33] text-g1 uppercase">
         Engineering_

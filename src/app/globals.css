@@ -1,9 +1,25 @@
 @import "tailwindcss";
+/* Enter/exit animations (animate-in, fade-in, slide-in-from-*, zoom-in) used by dialogs, sheets and menus. */
+@import "tw-animate-css";
+/* Semantic tokens, authored-content and print styles for the admin panel. */
+@import "./panel.css";
+
+/* The whole site is dark by design, so `dark:` utilities always apply. */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Segoe UI", var(--font-selawik), system-ui, sans-serif;
   --font-inter: var(--font-inter-google), "Inter", sans-serif;
   --font-sora: var(--font-sora-google), "Sora", sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "Liberation Mono", monospace;
+
+  /* The design uses 4px corners throughout; every radius utility stays on it. */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 12px;
 
   --color-ink: #020202;
   --color-g1: #a1a1a1;

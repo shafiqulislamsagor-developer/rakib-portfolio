@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
-import { DiscLink, DownloadCv, Eyebrow, OutlineButton } from "../ui";
+import { DiscLink, DownloadCv, Eyebrow, OutlineButton } from "../kit";
 
 // White squares scattered over the intro, relative to the section top.
 const squares = [
@@ -20,8 +20,20 @@ const speedOf = (size: number) => (size >= 28 ? 0.95 : size >= 16 ? 0.55 : 0.25)
  * Scroll effect after jackelder.design: the statement stays pinned while the
  * squares stream past at different speeds, then the light panel steps in.
  */
-export function AboutIntro() {
+type AboutIntroProps = {
+  eyebrow: string;
+  /** Two centred lines; the second half is set in italics. A newline splits them. */
+  heading: string;
+  intro: string;
+  name: string;
+  body: string;
+  portrait: { url: string; alt: string };
+  cvUrl?: string;
+};
+
+export function AboutIntro({ eyebrow, heading, intro, name, body, portrait, cvUrl = "/cv" }: AboutIntroProps) {
   const root = useRef<HTMLElement>(null);
+  const [headingLead, headingItalic] = heading.includes("\n") ? heading.split("\n") : [heading, ""];
 
   useGSAP(
     () => {
@@ -76,7 +88,7 @@ export function AboutIntro() {
         <div className="absolute inset-x-0 top-0 h-[909px] bg-black" />
         <div data-sticky className="relative flex flex-col items-center gap-[30px] px-[113px] pt-[330px]">
           <Eyebrow data-reveal="fade" className="trim h-[11px] w-full text-center text-[16px] tracking-[0.8px] text-g3">
-            {"/      About Me"}
+            {`/      ${eyebrow}`}
           </Eyebrow>
           <h2
             id="about-title"
@@ -84,17 +96,21 @@ export function AboutIntro() {
             className="w-full text-center text-[56px] leading-[67px] tracking-[0.1px] text-g1"
           >
             {/* the trailing space counts when Figma centres the line, so keep it non-breaking */}
-            I build visually striking designs&nbsp;
-            <br />
-            <em className="italic">that prioritize seamless user experiences.</em>
+            {headingLead}
+            {headingItalic && (
+              <>
+                &nbsp;
+                <br />
+                <em className="italic">{headingItalic}</em>
+              </>
+            )}
           </h2>
           <p
             data-reveal="lines"
             data-reveal-delay="0.2"
             className="w-[612px] text-center text-[18px] leading-[22px] tracking-[0.1px] text-g2"
           >
-            With 05 years of experience in the design industry I have been helping to bring brands to life through
-            thoughtful design that resonates.
+            {intro}
           </p>
         </div>
         {squares.map(([x, y, s], i) => (
@@ -115,7 +131,7 @@ export function AboutIntro() {
           </Eyebrow>
           <div className="absolute top-[580.5px] left-10 flex w-[690px] flex-col items-end gap-1 text-ink">
             <p data-reveal="up" className="text-[48px] leading-[58px] tracking-[0.1px] whitespace-pre italic">
-              {"Hey’ This is  Rakib Khan"}
+              {`Hey’ This is  ${name}`}
             </p>
             <p data-reveal="lines" data-reveal-delay="0.1" className="w-full text-[48px] leading-[58px] tracking-[0.1px]">
               For over five years, I have been dedicate{" "}
@@ -123,25 +139,25 @@ export function AboutIntro() {
             </p>
           </div>
 
-          <div data-reveal="clip" className="absolute top-[128px] left-[846px] h-[520px] w-[420px] overflow-hidden">
-            <Image
-              src="/images/profile-home.webp"
-              alt="Portrait of Rakib Khan"
-              width={840}
-              height={1040}
-              sizes="420px"
-              className="block h-[520px] w-[420px]"
-            />
-          </div>
+          {portrait.url && (
+            <div data-reveal="clip" className="absolute top-[128px] left-[846px] h-[520px] w-[420px] overflow-hidden">
+              <Image
+                src={portrait.url}
+                alt={portrait.alt || `Portrait of ${name}`}
+                width={840}
+                height={1040}
+                sizes="420px"
+                className="block h-[520px] w-[420px] object-cover"
+              />
+            </div>
+          )}
           <div className="absolute top-[698px] left-[846px] flex w-[554px] flex-col gap-10">
             <p data-reveal="lines" className="text-[18px] leading-[28px] tracking-[0.1px] text-ink">
-              As a passionate UI/UX designer with a strong background in crafting intuitive and visually compelling
-              digital experiences. With expertise in website design, mobile apps, SaaS platforms, branding, and
-              interactive prototyping, I transform ideas into engaging user interfaces that drive results.
+              {body}
             </p>
             <div data-reveal="up" data-reveal-delay="0.2" className="flex gap-10">
               <OutlineButton label="Learn More" href="/about" tone="dark" className="w-[180px]" />
-              <DownloadCv tone="dark" />
+              <DownloadCv tone="dark" href={cvUrl} />
             </div>
           </div>
           <DiscLink label="About me" href="/about" style={{ left: 805.5, top: 209.55 }} />

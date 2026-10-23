@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Tag } from "../ui";
+import { Tag } from "../kit";
 
 type WorkCardProps = {
   title: string;
   image: string;
+  alt?: string;
   tags: string[];
   href: string;
   className?: string;
@@ -12,17 +13,17 @@ type WorkCardProps = {
 };
 
 /** Project card. On hover the "View" disc rises from the bottom edge to the middle (card variant). */
-export function WorkCard({ title, image, tags, href, className = "", style }: WorkCardProps) {
+export function WorkCard({ title, image, alt = "", tags, href, className = "", style }: WorkCardProps) {
   return (
     <article className={`flex w-[670px] flex-col gap-3 ${className}`} style={style}>
       <Link
         href={href}
         aria-label={`View ${title}`}
         data-reveal="clip"
-        className="group relative block h-[520px] w-full overflow-hidden rounded-[4px]"
+        className="group relative block h-[520px] w-full overflow-hidden rounded-[4px] bg-[#d9d9d9]"
       >
         {/* below 1440px the page is zoomed to viewport/1440, so the 670px card really is ~47vw wide */}
-        <Image src={image} alt="" fill sizes="(max-width: 1440px) 47vw, 670px" className="object-fill" />
+        {image && <Image src={image} alt={alt} fill sizes="(max-width: 1440px) 47vw, 670px" className="object-fill" />}
         <span
           aria-hidden
           className="absolute top-full left-[495px] flex size-20 items-center justify-center rounded-full bg-white mix-blend-color-dodge transition-transform duration-300 ease-figma-out group-hover:-translate-y-[300px] group-focus-visible:-translate-y-[300px]"

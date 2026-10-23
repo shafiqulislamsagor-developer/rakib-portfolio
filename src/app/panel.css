@@ -1,0 +1,573 @@
+/* ===========================================================================
+ * The admin panel, admin-authored content and the résumé all reuse the
+ * semantic tokens (`bg-card`, `text-muted-foreground`, `border-border`, …).
+ * They are defined here in the colours of the design — ink background, grey
+ * type, hairline borders and white as the one accent — so the panel reads as
+ * the same product as the public site rather than a bolted-on dashboard.
+ * ========================================================================= */
+
+:root {
+  --background: #020202;
+  --foreground: #cacaca;
+  --card: #080808;
+  --card-foreground: #dcdcdc;
+  --popover: #0b0b0b;
+  --popover-foreground: #cacaca;
+  --primary: #ffffff;
+  --primary-foreground: #020202;
+  --secondary: rgba(255, 255, 255, 0.07);
+  --secondary-foreground: #dcdcdc;
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-foreground: #8a8a8a;
+  --accent: rgba(255, 255, 255, 0.08);
+  --accent-foreground: #ebebeb;
+  /* The only hue in the palette: destructive actions have to be unmistakable. */
+  --destructive: #e8695e;
+  --destructive-foreground: #020202;
+  --border: #272727;
+  --input: rgba(255, 255, 255, 0.03);
+  --ring: rgba(255, 255, 255, 0.7);
+  --radius: 4px;
+
+  /* Charts stay inside the greyscale ramp of the design. */
+  --chart-1: #ebebeb;
+  --chart-2: #a1a1a1;
+  --chart-3: #777777;
+  --chart-4: #4e4e4e;
+  --chart-5: #343434;
+  --viz-1: #ebebeb;
+  --viz-2: #777777;
+  --viz-grid: #1f1f1f;
+
+  --sidebar: #020202;
+  --sidebar-foreground: #8a8a8a;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #020202;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #ebebeb;
+  --sidebar-border: #1c1c1c;
+  --sidebar-ring: rgba(255, 255, 255, 0.5);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+ * Scrollbars inside the panel: a slim square thumb in the grey of the design.
+ * In @layer base so utilities like [scrollbar-width:none] still win.
+ */
+@layer base {
+  @supports not selector(::-webkit-scrollbar) {
+    .admin-root * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(138, 138, 138, 0.38) transparent;
+    }
+    .admin-scroll {
+      scrollbar-color: transparent transparent;
+    }
+    .admin-scroll:hover {
+      scrollbar-color: rgba(138, 138, 138, 0.3) transparent;
+    }
+  }
+
+  .admin-root ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    background: transparent;
+  }
+  .admin-root ::-webkit-scrollbar-track,
+  .admin-root ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  .admin-root ::-webkit-scrollbar-button {
+    display: none;
+  }
+  .admin-root ::-webkit-scrollbar-thumb {
+    min-height: 40px;
+    border: 4px solid transparent;
+    border-radius: 2px;
+    background-clip: padding-box;
+    background-color: rgba(138, 138, 138, 0.32);
+  }
+  .admin-root ::-webkit-scrollbar-thumb:hover {
+    border-width: 3px;
+    background-color: rgba(255, 255, 255, 0.55);
+  }
+
+  /* Sidebar: thinner, and only shown while the pointer is over the menu. */
+  .admin-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .admin-scroll::-webkit-scrollbar-thumb {
+    border-width: 2px;
+    background-color: transparent;
+  }
+  .admin-scroll:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(138, 138, 138, 0.3);
+  }
+  .admin-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.55);
+  }
+}
+
+/* ------------------------------------------------- Admin-authored Markdown */
+
+.prose-content {
+  color: var(--muted-foreground);
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0.1px;
+  overflow-wrap: anywhere;
+}
+.prose-content > * + * {
+  margin-top: 1.15em;
+}
+.prose-content :is(h1, h2, h3, h4) {
+  color: #a1a1a1;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-top: 2em;
+  scroll-margin-top: 8rem;
+}
+.prose-content h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+}
+.prose-content h2 {
+  font-size: 40px;
+  letter-spacing: -1.2px;
+}
+.prose-content h3 {
+  font-size: 28px;
+}
+.prose-content h4 {
+  font-size: 20px;
+}
+.prose-content > :first-child {
+  margin-top: 0;
+}
+.prose-content strong {
+  color: var(--accent-foreground);
+  font-weight: 600;
+}
+.prose-content em {
+  font-style: italic;
+}
+.prose-content a {
+  color: #ebebeb;
+  text-decoration: underline;
+  text-decoration-color: rgba(235, 235, 235, 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.3s;
+}
+.prose-content a:hover {
+  text-decoration-color: #ffffff;
+}
+.prose-content :is(ul, ol) {
+  padding-left: 1.4em;
+}
+.prose-content ul {
+  list-style: disc;
+}
+.prose-content ol {
+  list-style: decimal;
+}
+.prose-content li + li {
+  margin-top: 0.4em;
+}
+.prose-content li::marker {
+  color: #777777;
+}
+.prose-content blockquote {
+  border-left: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(152, 152, 152, 0.06);
+  border-radius: 0 4px 4px 0;
+  padding: 0.9em 1.2em;
+  color: #cacaca;
+}
+.prose-content code {
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15em 0.4em;
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  color: #dcdcdc;
+}
+.prose-content pre {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: #0a0a0a;
+  padding: 1.1rem 1.25rem;
+  color: #dcdcdc;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.prose-content pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+}
+.prose-content img {
+  border-radius: 4px;
+  max-width: 100%;
+  height: auto;
+}
+.prose-content hr {
+  border-color: var(--border);
+  margin-block: 2.5em;
+}
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  display: block;
+  overflow-x: auto;
+}
+.prose-content :is(th, td) {
+  border: 1px solid var(--border);
+  padding: 0.55em 0.8em;
+  text-align: left;
+}
+.prose-content th {
+  background: rgba(255, 255, 255, 0.04);
+  color: #dcdcdc;
+  font-weight: 600;
+}
+
+/*
+ * Admin data tables (components/admin/data-table.tsx). Each row is a grid whose
+ * tracks come from --dt-0…4, chosen by the table's own width. The widths match
+ * the Tailwind container variants used to hide cells: @xl 36rem, @3xl 48rem,
+ * @4xl 56rem, @5xl 64rem.
+ */
+.data-table-grid {
+  display: grid;
+  grid-template-columns: var(--dt-0);
+  align-items: center;
+  column-gap: 0.875rem;
+}
+@container (min-width: 36rem) {
+  .data-table-grid {
+    grid-template-columns: var(--dt-1);
+  }
+}
+@container (min-width: 48rem) {
+  .data-table-grid {
+    grid-template-columns: var(--dt-2);
+  }
+}
+@container (min-width: 56rem) {
+  .data-table-grid {
+    grid-template-columns: var(--dt-3);
+  }
+}
+@container (min-width: 64rem) {
+  .data-table-grid {
+    grid-template-columns: var(--dt-4);
+  }
+}
+
+/* ------------------------------------------------------------- Sign-in page
+ * The admin sign-in screen in the language of the site: the ink canvas, one
+ * hairline-framed glass card, and the faint grid the public cards sit on.
+ */
+.auth-shell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(70rem 40rem at 12% -10%, rgba(152, 152, 152, 0.1), transparent 70%),
+    radial-gradient(55rem 38rem at 110% 110%, rgba(152, 152, 152, 0.08), transparent 72%), #020202;
+}
+
+.auth-shell::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(70% 70% at 30% 20%, black, transparent);
+  pointer-events: none;
+}
+
+.auth-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(68px);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .auth-orb {
+    animation: auth-drift 16s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes auth-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2.5rem, -2rem, 0) scale(1.12);
+  }
+}
+
+.auth-card {
+  position: relative;
+  border: 1px solid rgba(152, 152, 152, 0.3);
+  border-radius: 4px;
+  background: rgba(152, 152, 152, 0.08);
+  backdrop-filter: blur(27.5px);
+  box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.9);
+}
+
+/* ---------------------------------------------------------------- Printing
+ * The résumé has to come out of a printer looking like a CV somebody would
+ * hand over: A4, a readable point size, the chosen layout intact and no web
+ * chrome. Tailwind's responsive prefixes are no help here — a print viewport
+ * is roughly 690px wide, so `lg:` never matches — hence the explicit grids.
+ */
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Paper gets the inverse of the screen: ink on white, and no canvas zoom. */
+  html,
+  body {
+    background: #fff !important;
+    color: #16181d !important;
+    zoom: 1 !important;
+  }
+  [data-reveal],
+  [data-intro] {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm 13mm;
+  }
+
+  /* Backgrounds and accents must survive: skill bars and timeline dots are
+     meaningless without them. */
+  .resume-sheet {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .resume-page {
+    padding: 0 !important;
+  }
+
+  .resume-sheet {
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #16181d !important;
+    font-size: 9.6pt;
+    line-height: 1.45;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .resume-sheet p,
+  .resume-sheet li,
+  .resume-sheet dd,
+  .resume-sheet dt,
+  .resume-sheet blockquote {
+    color: #30343d !important;
+  }
+  .resume-sheet h1,
+  .resume-sheet h2,
+  .resume-sheet h3,
+  .resume-sheet strong {
+    color: #16181d !important;
+  }
+  .resume-sheet .text-primary,
+  .resume-sheet li::marker {
+    color: #16181d !important;
+  }
+
+  /* ---- Header ---- */
+  .resume-head {
+    padding-bottom: 10pt !important;
+    margin-bottom: 2pt;
+    border-bottom: 1px solid #c9ccd4 !important;
+  }
+  .resume-name {
+    font-size: 21pt !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important;
+    margin: 0 !important;
+  }
+  .resume-headline {
+    font-size: 10.5pt !important;
+    margin-top: 2pt !important;
+  }
+  .resume-location {
+    font-size: 8.6pt !important;
+    margin-top: 1pt !important;
+  }
+  .resume-contacts {
+    margin-top: 6pt !important;
+    font-size: 8.6pt !important;
+    gap: 0 !important;
+  }
+  .resume-contacts li + li::before {
+    content: "·";
+    margin: 0 7px;
+    color: #9aa0ad;
+  }
+  .resume-contacts li {
+    display: inline;
+  }
+
+  /* ---- Blocks ---- */
+  .resume-block {
+    border-color: #d7dae1 !important;
+    padding-block: 9pt !important;
+    margin-block: 0 !important;
+    break-inside: auto;
+  }
+  .resume-block h2 {
+    font-size: 8.4pt !important;
+    letter-spacing: 0.14em !important;
+    margin-bottom: 5pt !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .resume-block h3 {
+    font-size: 10pt !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .resume-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .resume-item + .resume-item {
+    margin-top: 7pt !important;
+  }
+  .resume-sheet p,
+  .resume-sheet li {
+    orphans: 3;
+    widows: 3;
+  }
+  .resume-meta {
+    font-size: 8.4pt !important;
+  }
+  .resume-entry-head {
+    gap: 0 10pt !important;
+  }
+
+  /* Tighten the generous on-screen rhythm. */
+  .resume-sheet .space-y-7 > * + *,
+  .resume-sheet .space-y-6 > * + * {
+    margin-top: 7pt !important;
+  }
+  .resume-sheet .space-y-4 > * + * {
+    margin-top: 5pt !important;
+  }
+  .resume-sheet ul.mt-2 {
+    margin-top: 3pt !important;
+  }
+  .resume-sheet ul li + li {
+    margin-top: 1.5pt !important;
+  }
+
+  /* ---- Layout: keep each template's shape on paper ---- */
+  .resume-sheet--classic .resume-block {
+    display: grid !important;
+    grid-template-columns: 26mm 1fr !important;
+    gap: 0 8mm !important;
+  }
+  .resume-sheet--sidebar .resume-columns {
+    display: grid !important;
+    grid-template-columns: 1fr 52mm !important;
+    gap: 0 9mm !important;
+    padding-top: 9pt !important;
+  }
+  .resume-sheet--sidebar .resume-aside {
+    border-left: 1px solid #d7dae1 !important;
+    padding-left: 7mm !important;
+  }
+  .resume-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4pt 6mm !important;
+  }
+  .resume-sheet--sidebar .resume-aside .resume-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .resume-stats dt {
+    font-size: 13pt !important;
+  }
+  .resume-stats dd {
+    font-size: 8pt !important;
+  }
+  .resume-skill-row {
+    grid-template-columns: 24mm 1fr !important;
+  }
+
+  /* Skill meters and timeline dots need their fill to print. */
+  .resume-level {
+    background: #dcdfe6 !important;
+  }
+  .resume-level > span {
+    background: #16181d !important;
+  }
+  .resume-roles .border-primary {
+    border-color: #16181d !important;
+  }
+
+  /* ---- Links: no underline, no blue, no printed href ---- */
+  .resume-sheet a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+  .resume-sheet a[href]::after {
+    content: none !important;
+  }
+}

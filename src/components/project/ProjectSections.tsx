@@ -3,12 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import type { Project } from "@/data/projects";
+import { projectFacts, titleArt } from "@/lib/design";
+import type { ProjectData } from "@/types/content";
 import { figmaLinearGradient, sheenStops } from "@/lib/figma";
 import { gsap, motionEnabled, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight48, ArrowUpRightLarge } from "../icons";
 import { SvgType } from "../motion/SvgType";
-import { Eyebrow, OutlineButton, TextSlide } from "../ui";
+import { Eyebrow, OutlineButton, TextSlide } from "../kit";
 
 const hairline = "bg-white/[0.07]";
 
@@ -17,9 +18,12 @@ const hairline = "bg-white/[0.07]";
  * title rises letter by letter lower on the screen, then lifts into place while
  * the hairlines draw and the details fade in.
  */
-export function ProjectHero({ project }: { project: Project }) {
+export function ProjectHero({ project }: { project: ProjectData }) {
   const root = useRef<HTMLElement>(null);
-  const t = project.titleArt;
+  const t = titleArt(project.slug);
+  const facts = projectFacts(project);
+  // The cover carries the hero shot; the card thumbnail stands in when there is none.
+  const hero = project.cover.url ? project.cover : project.thumbnail.url ? project.thumbnail : null;
 
   useGSAP(
     () => {
@@ -56,11 +60,24 @@ export function ProjectHero({ project }: { project: Project }) {
       <span aria-hidden data-line-y className={`absolute top-[316px] left-[203.5px] h-[494px] w-px origin-top ${hairline}`} />
 
       <h1 id="project-title" className="sr-only">
-        {project.name}
+        {project.title}
       </h1>
-      <div data-intro data-title className="pointer-events-none absolute" style={{ left: t.x, top: t.y }}>
-        <SvgType name={t.glyphs} className="block max-w-none select-none" />
-      </div>
+      {/*
+       * Projects drawn in Figma have outlined title artwork; anything added
+       * from the admin panel gets the same words in the display face, at the
+       * same place on the canvas.
+       */}
+      {t ? (
+        <div data-intro data-title className="pointer-events-none absolute" style={{ left: t.x, top: t.y }}>
+          <SvgType name={t.glyphs} className="block max-w-none select-none" />
+        </div>
+      ) : (
+        <div data-intro data-title className="pointer-events-none absolute" style={{ left: 64.06, top: 100.57 }}>
+          <span className="trim small-caps block text-[160px] whitespace-nowrap text-g1 [--lh:1em]">
+            {project.title}
+          </span>
+        </div>
+      )}
       <Eyebrow
         data-intro
         data-fade-up
@@ -70,27 +87,31 @@ export function ProjectHero({ project }: { project: Project }) {
       </Eyebrow>
 
       <dl className="absolute top-[341px] left-[247px] flex w-[413px] flex-col gap-5 pt-8 text-[20px] leading-[26.4px] text-g2">
-        {project.facts.map((f) => (
+        {facts.map((f) => (
           <div key={f.label} data-intro data-fade-up className="flex items-center gap-12">
             <dt className="flex w-[76px] shrink-0 justify-center">{f.label}</dt>
             <dd className="whitespace-pre-line">{f.value.join("\n")}</dd>
           </div>
         ))}
-        <div data-intro data-fade-up className="flex items-center gap-12">
-          <dt className="flex w-[76px] shrink-0 justify-center">Website</dt>
-          <dd className="flex">
-            <OutlineButton slide label={project.website.label} href={project.website.href} className="h-8! w-[150px]" />
-          </dd>
-        </div>
+        {project.liveUrl && (
+          <div data-intro data-fade-up className="flex items-center gap-12">
+            <dt className="flex w-[76px] shrink-0 justify-center">Website</dt>
+            <dd className="flex">
+              <OutlineButton slide label={project.title} href={project.liveUrl} className="h-8! w-[150px]" />
+            </dd>
+          </div>
+        )}
       </dl>
 
-      <div
-        data-intro
-        data-hero-image
-        className="absolute top-[341px] left-[660px] h-[444px] w-[740px] overflow-hidden rounded-[4px] bg-[#d9d9d9]"
-      >
-        <Image src={project.hero} alt={`${project.name} preview`} fill sizes="740px" preload className="object-cover" />
-      </div>
+      {hero && (
+        <div
+          data-intro
+          data-hero-image
+          className="absolute top-[341px] left-[660px] h-[444px] w-[740px] overflow-hidden rounded-[4px] bg-[#d9d9d9]"
+        >
+          <Image src={hero.url} alt={hero.alt || `${project.title} preview`} fill sizes="740px" preload className="object-cover" />
+        </div>
+      )}
     </section>
   );
 }
@@ -135,7 +156,12 @@ function Shot({
   );
 }
 
-export function Overview({ project }: { project: Project }) {
+/**
+ * Overview: the summary set large as an italic lead followed by the opening of
+ * the case study, then the four-slot shot grid. The slots are fixed, so each
+ * one only appears once an image exists for it.
+ */
+export function Overview({ project, body }: { project: ProjectData; body: string }) {
   const [a, b, c, d] = project.gallery;
   return (
     <section aria-label="Overview" className="relative mx-auto w-full max-w-[1440px]">
@@ -145,26 +171,29 @@ export function Overview({ project }: { project: Project }) {
             {"/     Overview"}
           </Eyebrow>
           <p data-reveal="up" className="pl-[229px] text-[36px] leading-[43px] tracking-[0.1px] whitespace-pre-wrap text-g2">
+            {/* Figma indents the opening of the paragraph. */}
             {"                "}
             <em className="italic">
               {"   "}
-              {project.overview.lead}
+              {project.summary}
             </em>
-            {project.overview.body}
+            {body ? ` ${body}` : ""}
           </p>
         </div>
-        <div className="flex flex-wrap gap-5">
-          <Shot src={a} w={1360} h={810} />
-          <Shot src={b} w={670} h={500} />
-          <Shot src={c} w={325} h={500} delay={0.12} />
-          <Shot src={d} w={325} h={500} delay={0.24} />
-        </div>
+        {project.gallery.length > 0 && (
+          <div className="flex flex-wrap gap-5">
+            {a && <Shot src={a.url} alt={a.alt} w={1360} h={810} />}
+            {b && <Shot src={b.url} alt={b.alt} w={670} h={500} />}
+            {c && <Shot src={c.url} alt={c.alt} w={325} h={500} delay={0.12} />}
+            {d && <Shot src={d.url} alt={d.alt} w={325} h={500} delay={0.24} />}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-export function DesignProcess({ project }: { project: Project }) {
+export function DesignProcess({ project }: { project: ProjectData }) {
   const [a, b, c] = project.process.images;
   return (
     <section aria-labelledby="process-heading" className="relative mx-auto w-full max-w-[1440px]">
@@ -181,19 +210,21 @@ export function DesignProcess({ project }: { project: Project }) {
             {project.process.body}
           </p>
         </div>
-        <div className="flex flex-col gap-5">
-          <div className="flex gap-5">
-            <Shot src={a} w={557} h={500} />
-            <Shot src={b} w={783} h={500} delay={0.12} />
+        {project.process.images.length > 0 && (
+          <div className="flex flex-col gap-5">
+            <div className="flex gap-5">
+              {a && <Shot src={a.url} alt={a.alt} w={557} h={500} />}
+              {b && <Shot src={b.url} alt={b.alt} w={783} h={500} delay={0.12} />}
+            </div>
+            {c && <Shot src={c.url} alt={c.alt} w={1360} h={500} />}
           </div>
-          <Shot src={c} w={1360} h={500} />
-        </div>
+        )}
       </div>
     </section>
   );
 }
 
-export function FullPreview({ project }: { project: Project }) {
+export function FullPreview({ project }: { project: ProjectData }) {
   return (
     <section aria-labelledby="preview-heading" className="relative mx-auto w-full max-w-[1440px]">
       <div className="ml-[41px] flex w-[1370px] flex-col gap-10">
@@ -204,8 +235,18 @@ export function FullPreview({ project }: { project: Project }) {
         >
           Full overview
         </h2>
+        {/*
+         * One tall screenshot of the whole page. The frame is as tall as the
+         * design's own export, so the image fills it without being cropped.
+         */}
         <div data-reveal="clip" className="relative h-[8684px] w-[1370px] overflow-hidden rounded-[4px] bg-[#d9d9d9]">
-          <Image src={project.fullPreview} alt={`${project.name} full page design`} fill sizes="1370px" className="object-fill" />
+          <Image
+            src={project.fullPreview.url}
+            alt={project.fullPreview.alt || `${project.title} full page design`}
+            fill
+            sizes="1370px"
+            className="object-fill"
+          />
         </div>
       </div>
     </section>
@@ -234,14 +275,16 @@ function SheenTitle({ text, size, box }: { text: string; size: number; box: [num
   );
 }
 
+type NextPreview = { name: string; slug: string; image: string };
+
 /**
  * Next project (comment: "next project preview and CTA animation like Kubota"):
  * the previews unfold downwards while scrolling in, and on hover the title is
  * replaced by a copy rising from below while the arrow swaps out.
  */
-export function NextProject({ project }: { project: Project }) {
+export function NextProject({ next }: { next: { large: NextPreview; small: NextPreview } }) {
   const root = useRef<HTMLElement>(null);
-  const { large, small } = project.next;
+  const { large, small } = next;
 
   useGSAP(
     () => {
