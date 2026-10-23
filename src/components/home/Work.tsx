@@ -3,18 +3,22 @@ import { OutlineButton } from "../ui";
 import { WorkCard } from "./WorkCard";
 import { WorkTitle } from "./WorkTitle";
 
+/** staggered two-column canvas from the design: 670px cards 20px apart, each one 594px lower */
+const columnX = [0, 690];
+const rowStep = 594;
+
 export function Work() {
   return (
     <section id="work" aria-labelledby="work-title" className="relative mx-auto w-full max-w-[1440px]">
       <WorkTitle />
 
-      <div className="relative mx-auto h-[2970px] w-[1360px]">
+      <div className="relative mx-auto w-[1360px]" style={{ height: works.length * rowStep }}>
         {works.map((w, i) => (
           <WorkCard
             key={w.image}
             {...w}
             className="absolute"
-            style={{ left: i % 2 === 0 ? 0 : 690, top: i * 594 }}
+            style={{ left: columnX[i % 2], top: i * rowStep }}
           />
         ))}
       </div>

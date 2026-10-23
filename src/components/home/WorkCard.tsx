@@ -21,10 +21,11 @@ export function WorkCard({ title, image, tags, href, className = "", style }: Wo
         data-reveal="clip"
         className="group relative block h-[520px] w-full overflow-hidden rounded-[4px]"
       >
-        <Image src={image} alt="" fill sizes="670px" className="object-fill" />
+        {/* below 1440px the page is zoomed to viewport/1440, so the 670px card really is ~47vw wide */}
+        <Image src={image} alt="" fill sizes="(max-width: 1440px) 47vw, 670px" className="object-fill" />
         <span
           aria-hidden
-          className="absolute top-[520px] left-[495px] flex size-20 items-center justify-center rounded-full bg-white mix-blend-color-dodge transition-transform duration-300 ease-figma-out group-hover:-translate-y-[300px] group-focus-visible:-translate-y-[300px]"
+          className="absolute top-full left-[495px] flex size-20 items-center justify-center rounded-full bg-white mix-blend-color-dodge transition-transform duration-300 ease-figma-out group-hover:-translate-y-[300px] group-focus-visible:-translate-y-[300px]"
         >
           <span className="trim text-[16px] tracking-[0.1px] text-ink [--lh:1.2em]">View</span>
         </span>
